@@ -1,54 +1,53 @@
 const express = require('express');
 const rq = require('request-promise');
-const cheerio = require('cheerio');
+const Slack = require('slack-node');
+
 const app = express();
-const port = 4000;
+const port = 3000;
 
-app.get('/', function(req, res){
-  
-  let options = {
-    method: 'GET',
-    uri: 'https://m.search.naver.com/p/csearch/dcontent/external_api/json_todayunse_v2.naver?_callback=window.__jindo2_callback._fortune_my_0&gender=f&birth=20021022&solarCal=solar&time=',
-    headers: {
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
-    },
-    form: ''
-  };
-
-  rq(options)
-    .then(function(body){
-
-      const retData = body.replace('window.__jindo2_callback._forturn_my_0(', '').replace(');','',);
-      const jsonData = JSON.parse(retData);
-
-
-      console.log('------------------------------------');
-      console.log(jsonData.result.day.content[1].desc);
-      console.log('------------------------------------');
-
-
-      res.send(body);
-      return;
-
-      // 슬렉 푸시용 파라미터
-      options = {
-        method: 'post',
-        uri: 'https://hooks.slack.com/services/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',
-        body: {
-          text: '```'+'슬랙'+'```'
-        },
-        json: true
-      };
-
-      return rq(options);
+app.get('/', function(req,res){
     
-    })
-    .then(function(result){
-      console.log(result);
-    });
+    const webhookUri = "https://hooks.slack.com/services/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";
+    const slack = new Slack();
+    slack.setWebhook(webhookUri);
+
+    let options = {
+        method: 'GET',
+        uri: 'https://m.search.naver.com/p/csearch/dcontent/external_api/json_todayunse_v2.naver?_callback=window.__jindo2_callback._fortune_my_0&gender=f&birth=20021022&solarCal=solar&time=',
+        headers: {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+        },
+        form: ''
+        };
+
+    rq(options)
+        .then(function(body){
+
+            const retData = body.replace('window.__jindo2_callback._fortune_my_0(','').replace(');','').replace(/\s([A-z]+)\s?:/g,'"$1":').replace('\n','').replace('<b>' ,'*').replace('</b>', '*');
+            const jsonData =  JSON.parse(retData);
+            const result = JSON.stringify(retData);
+
+            res.send(jsonData.result.day.content[0].desc);
+
+            console.log('--------------------------------------');
+            console.log(jsonData.result.day.content[0].keyword);
+            console.log();
+            console.log(jsonData.result.day.content[0].desc);
+            console.log('--------------------------------------');                      
+
+            slack.webhook({
+                channel: "2019_도제학생방",      //전송될 슬랙 채널
+                username: "오늘의 운세",  // 슬랙에 표시될 이름
+                icon_emoji: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqXX85E3HssrkWI83XT1uPQ8ds0_9AAkzgvJ5o3gf242o9HghOSA',
+                text: jsonData.result.day.content[0].keyword + '\n' +
+                      '>>>' + jsonData.result.day.content[0].desc
+              }, function(err, response){
+                  console.log("===========webhook res===============");
+                  console.log(response);
+              });
+        });
+        
 });
-
-
 app.listen(port, function(){
-  console.log('EXPRESS 서버 실행중....');
+    console.log('오늘의 운세 출력 중...');
 })
