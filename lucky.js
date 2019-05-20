@@ -30,7 +30,7 @@ rq(options)
       const LuckyName = jsonData.result.day.content[0].keyword.replace(/<([^>]+)>/g, "");
       let SendSlack = `*${LuckyName}*`;
         
-      let num = 1;
+      let num = 0;
       for (const content in jsonData.result.day.content) {
         if(num == 4) break;
 
@@ -38,7 +38,7 @@ rq(options)
 *${jsonData.result.day.content[num].name}*
 ${jsonData.result.day.content[num].desc}
         `;
-
+        
         num++;
       }
       
