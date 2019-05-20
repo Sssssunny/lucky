@@ -25,7 +25,6 @@ rq(options)
     .then(function(body){
       
       let code = body.replace('window.__jindo2_callback._fortune_my_0(','').replace(');','').replace(/\s([A-z]+)\s?:/g,'"$1":').replace('\n','');      
-            
       const jsonData = JSON.parse(code);
       
       const LuckyName = jsonData.result.day.content[0].keyword.replace(/<([^>]+)>/g, "");
@@ -34,10 +33,12 @@ rq(options)
       let num = 1;
       for (const content in jsonData.result.day.content) {
         if(num == 4) break;
+
         SendSlack += `
 *${jsonData.result.day.content[num].name}*
 ${jsonData.result.day.content[num].desc}
         `;
+
         num++;
       }
       
