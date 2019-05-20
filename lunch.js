@@ -12,6 +12,14 @@ app.get('/', function(req, res){
     headers: {
       'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
     },
+    body: {
+      menugrp:'030300',
+      master:'meal2',
+      act:'list',
+      SearchYear:'2019',
+      SearchMonth:'05',
+      SearchDay:'20'
+    },
     form: ''
   };
 
@@ -25,6 +33,16 @@ app.get('/', function(req, res){
       const $ = keywords('span.title');
 
       res.send(all);
+
+      // 슬렉 푸시용 파라미터
+      // options = {
+      //   method: 'post',
+      //   uri: 'https://hooks.slack.com/services/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',
+      //   body: {
+      //     text: '전송할 값'
+      //   },
+      //   json: true
+      // };
 
       return rq(options);
     
