@@ -10,7 +10,7 @@ app.get('/', function(req, res){
     method: 'GET',
     uri: 'http://www.samil.hs.kr/main.php?menugrp=030300&master=meal2&act=list',
     headers: {
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36'
     },
     body: {
       menugrp:'030300',
@@ -20,7 +20,7 @@ app.get('/', function(req, res){
       SearchMonth:'05',
       SearchDay:'20'
     },
-    form: ''
+    json: false
   };
 
   rq(options)
@@ -32,7 +32,11 @@ app.get('/', function(req, res){
       const keywords = cheerio.load(all.html());
       const $ = keywords('span.title');
 
-      res.send(all);
+      res.send(code);
+
+      console.log('-----------------body-----------------');
+      console.log('code');
+      console.log('----------------------------------');
 
       // 슬렉 푸시용 파라미터
       // options = {

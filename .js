@@ -2,7 +2,7 @@ const express = require('express');
 const rq = require('request-promise');
 const Slack = require('slack-node');
 const app = express();
-const port = 4000;
+const port = 4001;
 
 app.get('/', function(req, res){
     
@@ -14,7 +14,7 @@ app.get('/', function(req, res){
     let options = {
         method: 'GET',
         // 오늘의 운세 링크
-        uri: 'https://m.search.naver.com/p/csearch/dcontent/external_api/json_todayunse_v2.naver?_callback=window.__jindo2_callback._fortune_my_0&gender=f&birth=20021022&solarCal=solar&time=',
+        uri: 'https://m.search.naver.com/p/csearch/dcontent/external_api/json_todayunse_v2.naver?_callback=window.__jindo2_callback._fortune_my_0&gender=f&birth=19920525&solarCal=solar&time=',
         headers: {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
         },
@@ -52,8 +52,8 @@ ${jsonData.result.day.content[num].desc}
 
       slack.webhook({
         channel: "2019_도제학생방", //슬랙 채널 이름
-        username: "써니의 운세",  // 슬랙봇 이름
-        icon_emoji: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqXX85E3HssrkWI83XT1uPQ8ds0_9AAkzgvJ5o3gf242o9HghOSA',
+        username: "맨디의 운세",  // 슬랙봇 이름
+        icon_emoji: 'http://cfile235.uf.daum.net/image/2308C84B54ED5F3F06D683',
         text: SendSlack
       }, function(err, response){
           console.log("--------------------------------");
